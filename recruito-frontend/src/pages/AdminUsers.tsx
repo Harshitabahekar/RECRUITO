@@ -23,7 +23,9 @@ const AdminUsers: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [editData, setEditData] = useState<UpdateUserRequest>({});
 
   const pageSize = 10;
@@ -85,14 +87,21 @@ const AdminUsers: React.FC = () => {
     }
   };
 
-  const handleDeleteUser = async (userId: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+  const handleDeleteUser = (userId: string) => {
+    setUserToDelete(userId);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
 
     const loadingToast = toast.loading('Deleting user...');
     try {
-      await adminService.deleteUser(userId);
+      await adminService.deleteUser(userToDelete);
       toast.dismiss(loadingToast);
       toast.success('User deleted successfully');
+      setShowDeleteConfirm(false);
+      setUserToDelete(null);
       loadUsers();
     } catch (error: any) {
       toast.dismiss(loadingToast);
@@ -377,6 +386,50 @@ const AdminUsers: React.FC = () => {
                       onClick={handleSaveEdit}
                     >
                       Save Changes
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Delete Confirmation Dialog */}
+        <AnimatePresence>
+          {showDeleteConfirm && userToDelete && (
+            <>
+              <motion.div
+                className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                onClick={() => setShowDeleteConfirm(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+              <motion.div
+                className="fixed inset-0 flex items-center justify-center z-50 p-4"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+              >
+                <Card className="w-full max-w-md p-8">
+                  <h2 className="text-2xl font-bold text-red-600 mb-4">Delete User</h2>
+                  <p className="text-gray-600 mb-6">
+                    Are you sure you want to delete this user? This action cannot be undone.
+                  </p>
+                  <div className="flex gap-3">
+                    <Button
+                      variant="secondary"
+                      className="flex-1"
+                      onClick={() => setShowDeleteConfirm(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      className="flex-1"
+                      onClick={confirmDeleteUser}
+                    >
+                      Delete
                     </Button>
                   </div>
                 </Card>
