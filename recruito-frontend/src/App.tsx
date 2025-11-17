@@ -13,6 +13,9 @@ import Applications from './pages/Applications';
 import Interviews from './pages/Interviews';
 import Chat from './pages/Chat';
 import Analytics from './pages/Analytics';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminUsers from './pages/AdminUsers';
+import AdminSettings from './pages/AdminSettings';
 import Layout from './components/Layout';
 import Landing from './pages/Landing';
 
@@ -55,6 +58,20 @@ function App() {
                   </PrivateRoute>
                 }
               />
+            </Route>
+            {/* Admin Routes */}
+            <Route
+              path="admin"
+              element={
+                <PrivateRoute allowedRoles={['ADMIN']}>
+                  <Layout />
+                </PrivateRoute>
+              }
+            >
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
             {/* Backward-compatible redirects */}
             <Route path="/jobs" element={<Navigate to="/app/jobs" replace />} />

@@ -11,6 +11,7 @@ import {
   MessageSquare,
   BarChart3,
   Settings,
+  Users,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { logout } from '../redux/slices/authSlice';
@@ -35,7 +36,13 @@ const Layout: React.FC = () => {
     { text: 'Chat', path: '/app/chat', icon: MessageSquare },
   ];
 
-  if (user?.role === 'ADMIN' || user?.role === 'RECRUITER') {
+  if (user?.role === 'ADMIN') {
+    menuItems.push(
+      { text: 'Admin Dashboard', path: '/admin/dashboard', icon: Home },
+      { text: 'Manage Users', path: '/admin/users', icon: Users },
+      { text: 'System Settings', path: '/admin/settings', icon: Settings }
+    );
+  } else if (user?.role === 'RECRUITER') {
     menuItems.push({ text: 'Dashboard', path: '/app/dashboard', icon: Home });
     menuItems.push({ text: 'Analytics', path: '/app/analytics', icon: BarChart3 });
   }
