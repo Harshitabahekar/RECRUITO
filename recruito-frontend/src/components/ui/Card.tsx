@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -19,7 +19,7 @@ export const Card: React.FC<CardProps> = ({
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: 'easeOut' },
+      transition: { duration: 0.5, ease: 'easeOut' as const },
     },
   };
 
@@ -34,7 +34,7 @@ export const Card: React.FC<CardProps> = ({
       whileInView={animated ? 'visible' : {}}
       viewport={{ once: true, amount: 0.2 }}
       whileHover={hover ? { y: -4 } : {}}
-      {...props}
+      {...(props as HTMLMotionProps<'div'>)}
     >
       {children}
     </motion.div>

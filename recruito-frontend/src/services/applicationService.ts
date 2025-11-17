@@ -12,6 +12,8 @@ export interface Application {
   resumeUrl?: string;
   createdAt: string;
   updatedAt: string;
+  location?: string; // Added property
+  appliedAt?: string; // Added property
 }
 
 export interface ApplicationCreateRequest {
